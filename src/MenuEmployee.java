@@ -5,8 +5,8 @@ import java.util.Scanner;
 
 public class MenuEmployee {
     int levelMenu = 0;
-    final String[] MENU_TITLES = {"Главное меню:", "Операции:", "Аналитика:", "Отчеты:", "Настройки:"};
-    final String[][] MENU_ITEMS = {
+    final private String[] MENU_TITLES = {"Главное меню:", "Операции:", "Аналитика:", "Отчеты:", "Настройки:"};
+    final private String[][] MENU_ITEMS = {
             {
                     "1. Операции",
                     "2. Аналитика",
@@ -33,8 +33,8 @@ public class MenuEmployee {
                     "2. Список сотрудников организации",
                     "3. Сведения о сотрудниках отдела",
                     "4. Сведения о сотрудниках с заработной платой меньше заданной",
-                    "4. Сведения о сотрудниках с заработной платой не меньше заданной",
-                    "5. Сведения о сотруднике по его идентификатору",
+                    "5. Сведения о сотрудниках с заработной платой не меньше заданной",
+                    "6. Сведения о сотруднике по его идентификатору",
                     "0. Возврат в главное меню"},
             {
                     "1. Сведения об организации",
@@ -57,22 +57,46 @@ public class MenuEmployee {
     }
 
     public void executeChoice(byte choiceMenu, EmployeeBook empBook) throws IOException {
+        int empId;
+        String firstName;
+        String secondName;
+        String surname;
+        int age;
+        int salary;
+        byte depId;
+
+
         if (levelMenu == 0) {
             levelMenu = choiceMenu;
-            this.showMenu();
+//            this.showMenu();
         } else if (choiceMenu == 0) {
             levelMenu = 0;
-            this.showMenu();
+//            this.showMenu();
         } else {
             System.out.println(MENU_ITEMS[levelMenu][choiceMenu - 1]);
             switch (levelMenu) {
                 case 1: {
                     switch (choiceMenu) {
                         case 1:
-                            inputEmployeeData(empBook);
+                            showTitle(choiceMenu);
+                            if (empBook.hasVacancies()) {
+                                secondName=Input.secondName();
+                                firstName=Input.firstName();
+                                surname=Input.surName();
+                                age=Input.age();
+                                depId=Input.departmentId();
+                                salary=Input.salary();
+                                empBook.addNewEmployee(secondName,firstName,surname,age,depId,salary);
+                                Display.string("Добавлен новый сотрудник");
+                            } else {
+                                Display.string("Отсутствуют свободные вакансии");
+                            }
                             pressEnterToContinue();
                             break;
                         case 2:
+                            showTitle(choiceMenu);
+                            empId=Input.employeeId();
+
                             EditByEmployeeId(empBook);
                             pressEnterToContinue();
                             break;
@@ -94,7 +118,37 @@ public class MenuEmployee {
                 case 3: {
                     switch (choiceMenu) {
                         case 1:
-                            empBook.displayFullData();
+                            showTitle(choiceMenu);
+                            Display.showFullDataOfEmployees(empBook);
+                            pressEnterToContinue();
+                            break;
+                        case 2:
+                            showTitle(choiceMenu);
+                            Display.showListOfEmployees(empBook);
+                            pressEnterToContinue();
+                            break;
+                        case 3:
+                            depId=Input.departmentId();
+                            showTitle(choiceMenu);
+                            Display.showFullDataOfEmployees(empBook, depId);
+                            pressEnterToContinue();
+                            break;
+                        case 4:
+                            salary=Input.salary();
+                            showTitle(choiceMenu);
+                            Display.showFullDataOfEmployees(empBook,salary,false);
+                            pressEnterToContinue();
+                            break;
+                        case 5:
+                            salary=Input.salary();
+                            showTitle(choiceMenu);
+                            Display.showFullDataOfEmployees(empBook,salary,true);
+                            pressEnterToContinue();
+                            break;
+                        case 6:
+                            empId=Input.employeeId();
+                            showTitle(choiceMenu);
+                            Display.ShowEmployeeData(empBook, empId);
                             pressEnterToContinue();
                             break;
                     }
@@ -108,34 +162,16 @@ public class MenuEmployee {
         }
     }
 
+    private void showTitle(int choiceMenu) {
+        Display.showTitle(MENU_TITLES[levelMenu], MENU_ITEMS[levelMenu][choiceMenu-1]);
+    }
+
     private void setup() {
     }
 
 
     // Методы обработки Меню "Операции"
     //
-    private void inputEmployeeData(@NotNull EmployeeBook empBook) {
-        if (empBook.hasVacancies()) {
-            System.out.println("Добавление нового сотрудника\n");
-            System.out.print("Полное имя сотрудника: ");
-            String fullName = new Scanner(System.in).nextLine();
-            System.out.print("Возраст: ");
-            int age = new Scanner(System.in).nextInt();
-            System.out.print("Идентификатор отдела: ");
-            byte depId = new Scanner(System.in).nextByte();
-            if (!validateDepartmentId(depId)) {
-                System.out.println("Операция не выполнена. Введен некорректный Id отдела.");
-                return;
-            }
-            System.out.print("Заработная плата: ");
-            int salary = new Scanner(System.in).nextInt();
-            Employee emp = new Employee(fullName, age, depId, salary);
-            empBook.addNewEmployee(emp);
-            System.out.println("Принят новый сотрудник: " + emp.getShortName());
-        } else {
-            System.out.println("Остутствуют свободные вакансии");
-        }
-    }
 
     private void EditByEmployeeId(EmployeeBook empBook) {
         System.out.println("Редактирование данных сотрудника\n");

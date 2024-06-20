@@ -1,0 +1,106 @@
+import java.util.ArrayList;
+
+public class Display {
+
+    public static void showListOfEmployees(EmployeeBook empBook) {
+        ArrayList<String> outputStrings = empBook.getListOfShortNames();
+
+        System.out.printf("%-7s%-40s\n", "N п/п", "Фамилия И.О. сотрудника");
+        displayList(outputStrings, "%5d  %-40s\n", "Список сотрудников пуст.");
+
+    }
+
+    public static void showFullDataOfEmployees(EmployeeBook empBook) {
+        ArrayList<Employee> list = empBook.getListOfEmployees();
+        String isEmpty = "Список сотрудников пуст.";
+
+        System.out.printf("%-5s%-35s%7s%6s%10s\n", "ID", "Фамилия Имя Отчество", "Возраст", "Отдел", "Зар.плата");
+        if (!list.isEmpty()) {
+            for (Employee p : list) {
+                System.out.printf("%-5d%-35s%7d%6d%,10d\n",
+                        p.getId(), p.getFullName(), p.getAge(), p.getDepartmentId(), p.getSalary());
+            }
+        } else {
+            System.out.println(isEmpty);
+        }
+
+    }
+
+    public static void showFullDataOfEmployees(EmployeeBook empBook, byte depId) {
+
+        ArrayList<Employee> list = empBook.getListOfEmployees(depId);
+        System.out.printf("Отдел ID=%d\n", depId);
+        String isEmpty = "Список сотрудников пуст.";
+
+        System.out.printf("%-5s%-35s%7s%10s\n", "ID", "Фамилия Имя Отчество", "Возраст", "Зар.плата");
+        if (!list.isEmpty()) {
+            for (Employee p : list) {
+                System.out.printf("%-5d%-35s%7d%,10d\n",
+                        p.getId(), p.getFullName(), p.getAge(), p.getSalary());
+            }
+        } else {
+            System.out.println(isEmpty);
+        }
+    }
+
+    /* option - вариант отбора сотрудников по размеру з/п
+        false   - отбор сотрудников с з/платой меньше чем targetSalary
+        true    - отбор сотрудников с з/платой большей или равной targetSalary
+     */
+    public static void showFullDataOfEmployees(EmployeeBook empBook, int targetSalary, boolean option) {
+
+        ArrayList<Employee> list = empBook.getListOfEmployees(targetSalary, option);
+        if (option) {
+            System.out.printf("Выборка сотрудников с заработной платой большей или равной %,d рублей\n",targetSalary);
+        } else {
+            System.out.printf("Выборка сотрудников с заработной платой меньшей %,d рублей\n",targetSalary);
+        }
+        String isEmpty = "Список сотрудников пуст.";
+
+        System.out.printf("%-5s%-35s%7s%6s%10s\n", "ID", "Фамилия Имя Отчество", "Возраст", "Отдел", "Зар.плата");
+        if (!list.isEmpty()) {
+            for (Employee p : list) {
+                System.out.printf("%-5d%-35s%7d%6d%,10d\n",
+                        p.getId(), p.getFullName(), p.getAge(), p.getDepartmentId(), p.getSalary());
+            }
+        } else {
+            System.out.println(isEmpty);
+        }
+    }
+
+    public static void ShowEmployeeData(EmployeeBook empBook, int empId) {
+        Employee person = empBook.searchById(empId);
+        System.out.printf("Сотрудник ID=%d\n", empId);
+        String isEmpty = "Отсутствует сотрудник с таким ID";
+        String formatString = "%-25s %45S\n";
+
+        if (person != null) {
+            System.out.printf(formatString, "Фамилия Имя Отчество:", person.getFullName());
+            System.out.printf(formatString, "Возраст:", person.getAge());
+            System.out.printf(formatString, "Идентификатор отдела:", person.getDepartmentId());
+            System.out.printf(formatString, "Размер заработной платы:", person.getSalary());
+        } else {
+            System.out.println(isEmpty);
+        }
+    }
+
+    public static void string(String string) {
+        System.out.println(string);
+    }
+
+    // Вспомогательные функции
+
+    public static void showTitle(String section, String title) {
+        System.out.printf("\n%-15s%s\n\n", section, title);
+    }
+
+    private static void displayList(ArrayList<String> list, String formatString, String isEmpty) {
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                System.out.printf(formatString, i + 1, list.get(i));
+            }
+        } else {
+            System.out.println(isEmpty);
+        }
+    }
+}

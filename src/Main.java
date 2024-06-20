@@ -9,13 +9,13 @@ public class Main {
         EmployeeBook empBook = new EmployeeBook(NUMBER_OF_EMPLOYEES);
         empBook.readFromFile();
         byte choiceMenu;
-
+        Scanner scMenu = new Scanner(System.in);
         MenuEmployee menuObj = new MenuEmployee();
 
         while (true) {
             do {
                 menuObj.showMenu();
-                choiceMenu = new Scanner(System.in).nextByte();
+                choiceMenu = scMenu.nextByte();
 
             } while (!menuObj.validate(choiceMenu));
             if (menuObj.exit(choiceMenu)) {
@@ -23,10 +23,9 @@ public class Main {
             }
             menuObj.executeChoice(choiceMenu, empBook);
         }
+        scMenu.close();
         empBook.saveToFile();
     }
-
-
 
 
 }

@@ -4,7 +4,7 @@ import org.jetbrains.annotations.NotNull;
 public class Employee {
     static int currentId = 0;
 
-    int employeeId;
+    private int employeeId;
     private String firstName;
     private String secondName;
     private String surName;
@@ -16,16 +16,15 @@ public class Employee {
 
     // Конструкторы класса
     // вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
-    public Employee(String name, int age, byte depId, int sal) {
-        fullName = name;
+    public Employee(String secondName, String firstName, String surName, int age, byte depId, int sal) {
+        this.secondName = secondName;
+        this.firstName = firstName;
+        this.surName = surName;
+        fullName = secondName+" "+firstName+" "+surName;
         this.age = age;
         departmentId = depId;
         salary = sal;
-        String[] nameArray = this.fullNameToArray(name);
-        secondName = nameArray[0];
-        firstName = nameArray[1];
-        surName = nameArray[2];
-        shortName = this.returnShortName(nameArray);
+        shortName = returnShortName(secondName,firstName,surName);
         currentId++;
         employeeId = currentId;
 
@@ -45,9 +44,13 @@ public class Employee {
         salary = Integer.parseInt(em[8]);
     }
 
+//    public boolean isEmpty() {
+//        return this=null;
+//    }
+
 // локальные вспомогательные методы
-    private @NotNull String returnShortName(String @NotNull [] array) {
-        return array[0] + " " + array[1].charAt(0) + "." + array[2].charAt(0) + ".";
+    private String returnShortName(String a,String b, String c) {
+        return a + " " + b.charAt(0) + "." + c.charAt(0) + ".";
     }
 
     @Contract(pure = true)
@@ -58,19 +61,6 @@ public class Employee {
     @Contract(pure = true)
     private String @NotNull [] lineToArray(@NotNull String line) {
         return line.split(";");
-    }
-
-    //Методы вывода в консоль
-    public void displayEmployeeData() {
-        System.out.println("Вывод сведений о сотруднике:\n");
-        System.out.printf("Идентификатор:\t%d\n", employeeId);
-        System.out.printf("Фамилия:\t\t\t%s\n", secondName);
-        System.out.printf("Имя:\t\t\t\t%s\n", firstName);
-        System.out.printf("Отчество:\t\t\t%s\n", surName);
-        System.out.printf("Возраст:\t\t\t%d\n", age);
-        System.out.printf("ФИО:\t\t\t\t%s\n", shortName);
-        System.out.printf("Заработная плата:\t%d\n", salary);
-        System.out.println();
     }
 
     // Блок методов get
@@ -114,7 +104,7 @@ public class Employee {
     public void setProperties(String fullName, int age, byte depId, int salary) {
         String[] nameArray = this.fullNameToArray(fullName);
         this.setFullName(fullName);
-        this.setShortName(this.returnShortName(nameArray));
+//        this.setShortName(this.returnShortName(nameArray));
         this.setFirstName(nameArray[1]);
         this.setSecondName(nameArray[0]);
         this.setSurName(nameArray[2]);
