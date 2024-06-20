@@ -1,6 +1,8 @@
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 public class Employee {
     static int currentId = 0;
 
@@ -20,11 +22,11 @@ public class Employee {
         this.secondName = secondName;
         this.firstName = firstName;
         this.surName = surName;
-        fullName = secondName+" "+firstName+" "+surName;
+        fullName = secondName + " " + firstName + " " + surName;
         this.age = age;
         departmentId = depId;
         salary = sal;
-        shortName = returnShortName(secondName,firstName,surName);
+        shortName = returnShortName(secondName, firstName, surName);
         currentId++;
         employeeId = currentId;
 
@@ -44,12 +46,26 @@ public class Employee {
         salary = Integer.parseInt(em[8]);
     }
 
-//    public boolean isEmpty() {
-//        return this=null;
-//    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Employee employee = (Employee) o;
+        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId && salary == employee.salary && Objects.equals(firstName, employee.firstName) && Objects.equals(secondName, employee.secondName) && Objects.equals(surName, employee.surName) && Objects.equals(fullName, employee.fullName) && Objects.equals(shortName, employee.shortName);
+    }
 
-// локальные вспомогательные методы
-    private String returnShortName(String a,String b, String c) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(employeeId, firstName, secondName, surName, fullName, shortName, age, departmentId, salary);
+    }
+
+    public String toString() {
+        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + surName + ";"
+                + age + ";" + departmentId + ";" + salary + "\n";
+    }
+
+    // локальные вспомогательные методы
+    private String returnShortName(String a, String b, String c) {
         return a + " " + b.charAt(0) + "." + c.charAt(0) + ".";
     }
 
@@ -101,13 +117,12 @@ public class Employee {
     }
 
     // Блок методов set
-    public void setProperties(String fullName, int age, byte depId, int salary) {
-        String[] nameArray = this.fullNameToArray(fullName);
-        this.setFullName(fullName);
-//        this.setShortName(this.returnShortName(nameArray));
-        this.setFirstName(nameArray[1]);
-        this.setSecondName(nameArray[0]);
-        this.setSurName(nameArray[2]);
+    public void setProperties(String secondName, String firstName, String surName, int age, byte depId, int salary) {
+        this.setFirstName(firstName);
+        this.setSecondName(secondName);
+        this.setSurName(surName);
+        this.setFullName(secondName + " " + firstName + " " + surName);
+        this.setShortName(returnShortName(secondName, firstName, surName));
         this.setAge(age);
         this.setDepartmentId(depId);
         this.setSalary(salary);

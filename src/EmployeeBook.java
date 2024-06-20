@@ -20,11 +20,13 @@ public class EmployeeBook {
         return freeVacancies != employees.length;
     }
 
-    public void addNewEmployee(String secondName, String firstName, String surname, int age, byte depId, int salary) {
+    public boolean addNewEmployee(String secondName, String firstName, String surname, int age, byte depId, int salary) {
         if (hasVacancies()) {
             Employee emp = new Employee(secondName, firstName, surname, age, depId, salary);
             addEmployee(emp);
+            return true;
         }
+        return false;
     }
 
     private void addEmployee(Employee emp) {
@@ -71,14 +73,13 @@ public class EmployeeBook {
     // Методы сохранения данных в файл и считывания из файла
 
     public void saveToFile() {
-        String line;
         try (FileWriter writer = new FileWriter(SAVE_FILE, false)) {
             for (Employee person : employees) {
                 if (person != null) {
-                    line = person.getId() + ";" + person.getFullName() + ";" + person.getShortName() + ";"
-                            + person.getFirstName() + ";" + person.getSecondName() + ";" + person.getSurName() + ";"
-                            + person.getAge() + ";" + person.getDepartmentId() + ";" + person.getSalary() + "\n";
-                    writer.write(line);
+//                    line = person.getId() + ";" + person.getFullName() + ";" + person.getShortName() + ";"
+//                            + person.getFirstName() + ";" + person.getSecondName() + ";" + person.getSurName() + ";"
+//                            + person.getAge() + ";" + person.getDepartmentId() + ";" + person.getSalary() + "\n";
+                    writer.write(person.toString());
                 }
             }
             writer.flush();
@@ -168,5 +169,35 @@ public class EmployeeBook {
             }
         }
         return list;
+    }
+    // Методы аналитики по заработной плате
+
+    /* Метод возвращает массив со сведениями о заработной плате
+    [0] - суммарное значение заработной платы
+    [1] - количество сотрудников
+    [2] - максимальное значение заработной плата
+    [3] - минимальное значение заработной плата
+     */
+
+    private int[] salary(byte depId) {
+        int[] salaryArray=new int[4];
+        salaryArray[3]=Integer.MAX_VALUE;
+        for (Employee person :employees) {
+            if ((person!=null)&&(depId==0||depId==person.getDepartmentId())) {
+                salaryArray[0]+= person.getSalary();
+                salaryArray[1]++;
+                salaryArray[2]=Math.max(salaryArray[2], person.getSalary());
+                salaryArray[3]=Math.min(salaryArray[3], person.getSalary());
+            }
+        }
+        return salaryArray;
+    }
+
+    public int[] salaryInformation() {
+        return salary((byte)0);
+    }
+
+    public int[] salaryInformation(byte depId) {
+        return salary(depId);
     }
 }

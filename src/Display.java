@@ -2,6 +2,19 @@ import java.util.ArrayList;
 
 public class Display {
 
+    public static void dismissalOfEmployee(EmployeeBook empBook, int empId) {
+
+        Employee person = empBook.searchById(empId);
+        String isEmpty = "Сотрудник с ID=%d отсутствует в базе\n";
+
+        if (person != null) {
+            System.out.printf("Уволен сотрудник: %s\n", person.getShortName());
+            empBook.deleteEmployee(empId);
+        } else {
+            System.out.printf(isEmpty, empId);
+        }
+    }
+
     public static void showListOfEmployees(EmployeeBook empBook) {
         ArrayList<String> outputStrings = empBook.getListOfShortNames();
 
@@ -47,13 +60,14 @@ public class Display {
         false   - отбор сотрудников с з/платой меньше чем targetSalary
         true    - отбор сотрудников с з/платой большей или равной targetSalary
      */
+
     public static void showFullDataOfEmployees(EmployeeBook empBook, int targetSalary, boolean option) {
 
         ArrayList<Employee> list = empBook.getListOfEmployees(targetSalary, option);
         if (option) {
-            System.out.printf("Выборка сотрудников с заработной платой большей или равной %,d рублей\n",targetSalary);
+            System.out.printf("Выборка сотрудников с заработной платой большей или равной %,d рублей\n", targetSalary);
         } else {
-            System.out.printf("Выборка сотрудников с заработной платой меньшей %,d рублей\n",targetSalary);
+            System.out.printf("Выборка сотрудников с заработной платой меньшей %,d рублей\n", targetSalary);
         }
         String isEmpty = "Список сотрудников пуст.";
 
@@ -88,6 +102,10 @@ public class Display {
         System.out.println(string);
     }
 
+    public static void stringf(String s, int value) {
+        System.out.printf(s, value);
+    }
+
     // Вспомогательные функции
 
     public static void showTitle(String section, String title) {
@@ -102,5 +120,38 @@ public class Display {
         } else {
             System.out.println(isEmpty);
         }
+    }
+
+    /* option - параметр опредеяющий тип запрашиваемых данных
+        0 - минимальная заработная плата
+        1 - максимальная заработная плата
+     */
+    public static void employeeInformation(EmployeeBook empBook, int option) {
+
+    }
+
+    public static void employeeInformation(EmployeeBook empBook, byte depId, int option) {
+
+    }
+
+    public static void salaryInformation(EmployeeBook empBook) {
+        int[] salaryInfo = empBook.salaryInformation();
+        String title="Сведения о заработной плате по организации";
+        salaryReport(title,salaryInfo);
+    }
+
+    public static void salaryInformation(EmployeeBook empBook, byte depId) {
+        int[] salaryInfo = empBook.salaryInformation(depId);
+        String title="Сведения о заработной плате по отделу ID="+depId;
+        salaryReport(title,salaryInfo);
+    }
+
+    private static void salaryReport(String title, int[] salaryInfo) {
+        System.out.println(title);
+        System.out.printf("%-40s: %,d\n", "Сумма затрат на заработную плату",salaryInfo[0]);
+        System.out.printf("%-40s: %d\n", "Количество сотрудников", salaryInfo[1]);
+        System.out.printf("%-40s: %,.2f\n","Средняя заработная плата", (double) salaryInfo[0]/salaryInfo[1]);
+        System.out.printf("%-40s: %,d\n","Максимальный размер заработной платы",salaryInfo[2]);
+        System.out.printf("%-40s: %,d\n","Минимальный размер зарабтной платы",salaryInfo[3]);
     }
 }
