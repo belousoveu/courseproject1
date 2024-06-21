@@ -65,13 +65,8 @@ public class Employee {
     }
 
     // локальные вспомогательные методы
-    private String returnShortName(String a, String b, String c) {
+    private @NotNull String returnShortName(String a, @NotNull String b, @NotNull String c) {
         return a + " " + b.charAt(0) + "." + c.charAt(0) + ".";
-    }
-
-    @Contract(pure = true)
-    private String @NotNull [] fullNameToArray(@NotNull String name) {
-        return name.split(" ");
     }
 
     @Contract(pure = true)
@@ -134,7 +129,6 @@ public class Employee {
 
     public void setShortName(String s) {
         this.shortName = s;
-
     }
 
     public void setFirstName(String s) {

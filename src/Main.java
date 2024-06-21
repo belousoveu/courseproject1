@@ -13,15 +13,24 @@ public class Main {
         MenuEmployee menuObj = new MenuEmployee();
 
         while (true) {
-            do {
-                menuObj.showMenu();
-                choiceMenu = scMenu.nextByte();
 
-            } while (!menuObj.validate(choiceMenu));
-            if (menuObj.exit(choiceMenu)) {
-                break;
-            }
-            menuObj.executeChoice(choiceMenu, empBook);
+                do {
+                    menuObj.showMenu();
+                    if(scMenu.hasNextByte()) {
+                        choiceMenu = scMenu.nextByte();
+                        if (menuObj.validate(choiceMenu)) {
+                            break;
+                        }
+                    } else {
+                        scMenu.next();
+                    }
+                } while (true);
+
+                if (menuObj.exit(choiceMenu)) {
+                    break;
+                }
+                menuObj.executeChoice(choiceMenu, empBook);
+
         }
         scMenu.close();
         empBook.saveToFile();

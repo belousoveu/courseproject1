@@ -1,8 +1,10 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 
 public class Display {
 
-    public static void dismissalOfEmployee(EmployeeBook empBook, int empId) {
+    public static void dismissalOfEmployee(@NotNull EmployeeBook empBook, int empId) {
 
         Employee person = empBook.searchById(empId);
         String isEmpty = "Сотрудник с ID=%d отсутствует в базе\n";
@@ -60,7 +62,6 @@ public class Display {
         false   - отбор сотрудников с з/платой меньше чем targetSalary
         true    - отбор сотрудников с з/платой большей или равной targetSalary
      */
-
     public static void showFullDataOfEmployees(EmployeeBook empBook, int targetSalary, boolean option) {
 
         ArrayList<Employee> list = empBook.getListOfEmployees(targetSalary, option);
@@ -98,6 +99,51 @@ public class Display {
         }
     }
 
+    /* option - параметр опредеяющий тип запрашиваемых данных
+        0 - минимальная заработная плата
+        1 - максимальная заработная плата
+     */
+    public static void employeeInformation(EmployeeBook empBook, int option) {
+        employeeInformation(empBook,(byte) 0,option);
+    }
+    public static void employeeInformation(EmployeeBook empBook, byte depId, int option) {
+        Employee[] empArray = switch (option) {
+            case 0 -> empBook.findMinSalary(depId);
+            case 1 -> empBook.findMaxSalary(depId);
+            default -> throw new IllegalArgumentException("Invalid value of 'option'");
+        };
+        if (empArray != null && empArray.length != 0) {
+            for (Employee emp : empArray) {
+                ShowEmployeeData(empBook, emp.getId());
+                string("");
+            }
+        } else {
+            System.out.println("Список сотруников пуст.");
+        }
+    }
+
+    public static void salaryInformation(@NotNull EmployeeBook empBook) {
+        int[] salaryInfo = empBook.salaryInformation();
+        String title = "Сведения о заработной плате по организации";
+        salaryReport(title, salaryInfo);
+    }
+
+    public static void salaryInformation(@NotNull EmployeeBook empBook, byte depId) {
+        int[] salaryInfo = empBook.salaryInformation(depId);
+        String title = "Сведения о заработной плате по отделу ID=" + depId;
+        salaryReport(title, salaryInfo);
+    }
+
+    private static void salaryReport(String title, int @NotNull [] salaryInfo) {
+        System.out.println(title);
+        System.out.printf("%-40s: %,d\n", "Сумма затрат на заработную плату", salaryInfo[0]);
+        System.out.printf("%-40s: %d\n", "Количество сотрудников", salaryInfo[1]);
+        System.out.printf("%-40s: %,.2f\n", "Средняя заработная плата", (double) salaryInfo[0] / salaryInfo[1]);
+        System.out.printf("%-40s: %,d\n", "Максимальный размер заработной платы", salaryInfo[2]);
+        System.out.printf("%-40s: %,d\n", "Минимальный размер зарабтной платы", salaryInfo[3]);
+    }
+
+    // Вспомогательные функции
     public static void string(String string) {
         System.out.println(string);
     }
@@ -105,8 +151,6 @@ public class Display {
     public static void stringf(String s, int value) {
         System.out.printf(s, value);
     }
-
-    // Вспомогательные функции
 
     public static void showTitle(String section, String title) {
         System.out.printf("\n%-15s%s\n\n", section, title);
@@ -120,58 +164,5 @@ public class Display {
         } else {
             System.out.println(isEmpty);
         }
-    }
-
-    /* option - параметр опредеяющий тип запрашиваемых данных
-        0 - минимальная заработная плата
-        1 - максимальная заработная плата
-     */
-    public static void employeeInformation(EmployeeBook empBook, int option) {
-        Employee emp = switch (option) {
-            case 0 -> empBook.findMinSalary((byte) 0);
-            case 1 -> empBook.findMaxSalary((byte) 0);
-            default -> throw new IllegalArgumentException("Invalid value of 'option'");
-        };
-        if (emp!=null) {
-            ShowEmployeeData(empBook, emp.getId());
-        } else {
-            System.out.println("Список сотруников пуст.");
-        }
-
-    }
-
-    public static void employeeInformation(EmployeeBook empBook, byte depId, int option) {
-        Employee emp = switch (option) {
-            case 0 -> empBook.findMinSalary(depId);
-            case 1 -> empBook.findMaxSalary(depId);
-            default -> throw new IllegalArgumentException("Invalid value of 'option'");
-        };
-        if (emp!=null) {
-            ShowEmployeeData(empBook, emp.getId());
-        } else {
-            System.out.println("Список сотруников пуст.");
-        }
-    }
-
-
-    public static void salaryInformation(EmployeeBook empBook) {
-        int[] salaryInfo = empBook.salaryInformation();
-        String title = "Сведения о заработной плате по организации";
-        salaryReport(title, salaryInfo);
-    }
-
-    public static void salaryInformation(EmployeeBook empBook, byte depId) {
-        int[] salaryInfo = empBook.salaryInformation(depId);
-        String title = "Сведения о заработной плате по отделу ID=" + depId;
-        salaryReport(title, salaryInfo);
-    }
-
-    private static void salaryReport(String title, int[] salaryInfo) {
-        System.out.println(title);
-        System.out.printf("%-40s: %,d\n", "Сумма затрат на заработную плату", salaryInfo[0]);
-        System.out.printf("%-40s: %d\n", "Количество сотрудников", salaryInfo[1]);
-        System.out.printf("%-40s: %,.2f\n", "Средняя заработная плата", (double) salaryInfo[0] / salaryInfo[1]);
-        System.out.printf("%-40s: %,d\n", "Максимальный размер заработной платы", salaryInfo[2]);
-        System.out.printf("%-40s: %,d\n", "Минимальный размер зарабтной платы", salaryInfo[3]);
     }
 }

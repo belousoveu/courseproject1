@@ -16,10 +16,6 @@ public class EmployeeBook {
         return freeVacancies > 0;
     }
 
-    public boolean hasEmployee() {
-        return freeVacancies != employees.length;
-    }
-
     public boolean addNewEmployee(String secondName, String firstName, String surname, int age, byte depId, int salary) {
         if (hasVacancies()) {
             Employee emp = new Employee(secondName, firstName, surname, age, depId, salary);
@@ -122,9 +118,9 @@ public class EmployeeBook {
     Редко когда з/п бывает, например, 85 641 рубль
      */
     private void changeSalary(double multiplier, byte depId) {
-        for (int i = 0; i < employees.length; i++) {
-            if ((employees[i] != null) && (depId == 0 || employees[i].getDepartmentId() == depId)) {
-                employees[i].setSalary((int) Math.ceil((employees[i].getSalary() * multiplier) / 100) * 100);
+        for (Employee employee : employees) {
+            if ((employee != null) && (depId == 0 || employee.getDepartmentId() == depId)) {
+                employee.setSalary((int) Math.ceil((employee.getSalary() * multiplier) / 100) * 100);
             }
         }
     }
@@ -198,35 +194,45 @@ public class EmployeeBook {
         return salary(depId);
     }
 
-    public Employee findMinSalary(byte depId) {
+    public Employee[] findMinSalary(byte depId) {
         if (freeVacancies == employees.length) {
             return null;
         }
-        int minIndex = 0;
+        ArrayList<Employee> resultArray = new ArrayList<>();
         int minValue = Integer.MAX_VALUE;
-        for (int i = 0; i < employees.length; i++) {
-            if ((employees[i] != null) && (depId == 0 || depId == employees[i].getDepartmentId())
-                    && (employees[i].getSalary() < minValue)) {
-                minValue = employees[i].getSalary();
-                minIndex = i;
+        for (Employee employee : employees) {
+            if ((employee != null) && (depId == 0 || depId == employee.getDepartmentId())
+                    && (employee.getSalary() < minValue)) {
+                minValue = employee.getSalary();
             }
         }
-        return employees[minIndex];
+        for (Employee employee : employees) {
+            if ((employee != null) && (depId == 0 || depId == employee.getDepartmentId())
+                    && (employee.getSalary() == minValue)) {
+                resultArray.add(employee);
+            }
+        }
+        return resultArray.toArray(new Employee[0]);
     }
 
-    public Employee findMaxSalary(byte depId) {
+    public Employee[] findMaxSalary(byte depId) {
         if (freeVacancies == employees.length) {
             return null;
         }
-        int maxIndex = 0;
+        ArrayList<Employee> resultArray = new ArrayList<>();
         int maxValue = 0;
-        for (int i = 0; i < employees.length; i++) {
-            if ((employees[i] != null) && (depId == 0 || depId == employees[i].getDepartmentId())
-                    && (employees[i].getSalary() > maxValue)) {
-                maxValue = employees[i].getSalary();
-                maxIndex = i;
+        for (Employee value : employees) {
+            if ((value != null) && (depId == 0 || depId == value.getDepartmentId())
+                    && (value.getSalary() > maxValue)) {
+                maxValue = value.getSalary();
             }
         }
-        return employees[maxIndex];
+        for (Employee employee : employees) {
+            if ((employee != null) && (depId == 0 || depId == employee.getDepartmentId())
+                    && (employee.getSalary() == maxValue)) {
+                resultArray.add(employee);
+            }
+        }
+        return resultArray.toArray(new Employee[0]);
     }
 }
