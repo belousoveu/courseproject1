@@ -2,7 +2,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Input {
-final private static byte NUMBER_OF_DEPARTMENTS=5;
+    final private static byte NUMBER_OF_DEPARTMENTS = 5;
 
     // Ввод чисел типа byte
     public static byte departmentId() {
@@ -23,7 +23,7 @@ final private static byte NUMBER_OF_DEPARTMENTS=5;
     private static byte departmentId(String title, boolean option) {
         Scanner sc = new Scanner(System.in);
         byte inputValue;
-        String errorMessage = "Необходимо ввести целое число в от 1 до "+Input.NUMBER_OF_DEPARTMENTS;
+        String errorMessage = "Необходимо ввести целое число в от 1 до " + Input.NUMBER_OF_DEPARTMENTS;
         errorMessage += (option ? "" : "0 - оставить предыдущее значение");
 
         do {

@@ -14,22 +14,22 @@ public class Main {
 
         while (true) {
 
-                do {
-                    menuObj.showMenu();
-                    if(scMenu.hasNextByte()) {
-                        choiceMenu = scMenu.nextByte();
-                        if (menuObj.validate(choiceMenu)) {
-                            break;
-                        }
-                    } else {
-                        scMenu.next();
+            do {
+                menuObj.showMenu();
+                if (scMenu.hasNextByte()) {
+                    choiceMenu = scMenu.nextByte();
+                    if (menuObj.validate(choiceMenu)) {
+                        break;
                     }
-                } while (true);
-
-                if (menuObj.exit(choiceMenu)) {
-                    break;
+                } else {
+                    scMenu.next();
                 }
-                menuObj.executeChoice(choiceMenu, empBook);
+            } while (true);
+
+            if (menuObj.exit(choiceMenu)) {
+                break;
+            }
+            menuObj.executeChoice(choiceMenu, empBook);
 
         }
         scMenu.close();

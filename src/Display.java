@@ -104,8 +104,9 @@ public class Display {
         1 - максимальная заработная плата
      */
     public static void employeeInformation(EmployeeBook empBook, int option) {
-        employeeInformation(empBook,(byte) 0,option);
+        employeeInformation(empBook, (byte) 0, option);
     }
+
     public static void employeeInformation(EmployeeBook empBook, byte depId, int option) {
         Employee[] empArray = switch (option) {
             case 0 -> empBook.findMinSalary(depId);
