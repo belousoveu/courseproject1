@@ -127,31 +127,51 @@ public class Display {
         1 - максимальная заработная плата
      */
     public static void employeeInformation(EmployeeBook empBook, int option) {
+        Employee emp = switch (option) {
+            case 0 -> empBook.findMinSalary((byte) 0);
+            case 1 -> empBook.findMaxSalary((byte) 0);
+            default -> throw new IllegalArgumentException("Invalid value of 'option'");
+        };
+        if (emp!=null) {
+            ShowEmployeeData(empBook, emp.getId());
+        } else {
+            System.out.println("Список сотруников пуст.");
+        }
 
     }
 
     public static void employeeInformation(EmployeeBook empBook, byte depId, int option) {
-
+        Employee emp = switch (option) {
+            case 0 -> empBook.findMinSalary(depId);
+            case 1 -> empBook.findMaxSalary(depId);
+            default -> throw new IllegalArgumentException("Invalid value of 'option'");
+        };
+        if (emp!=null) {
+            ShowEmployeeData(empBook, emp.getId());
+        } else {
+            System.out.println("Список сотруников пуст.");
+        }
     }
+
 
     public static void salaryInformation(EmployeeBook empBook) {
         int[] salaryInfo = empBook.salaryInformation();
-        String title="Сведения о заработной плате по организации";
-        salaryReport(title,salaryInfo);
+        String title = "Сведения о заработной плате по организации";
+        salaryReport(title, salaryInfo);
     }
 
     public static void salaryInformation(EmployeeBook empBook, byte depId) {
         int[] salaryInfo = empBook.salaryInformation(depId);
-        String title="Сведения о заработной плате по отделу ID="+depId;
-        salaryReport(title,salaryInfo);
+        String title = "Сведения о заработной плате по отделу ID=" + depId;
+        salaryReport(title, salaryInfo);
     }
 
     private static void salaryReport(String title, int[] salaryInfo) {
         System.out.println(title);
-        System.out.printf("%-40s: %,d\n", "Сумма затрат на заработную плату",salaryInfo[0]);
+        System.out.printf("%-40s: %,d\n", "Сумма затрат на заработную плату", salaryInfo[0]);
         System.out.printf("%-40s: %d\n", "Количество сотрудников", salaryInfo[1]);
-        System.out.printf("%-40s: %,.2f\n","Средняя заработная плата", (double) salaryInfo[0]/salaryInfo[1]);
-        System.out.printf("%-40s: %,d\n","Максимальный размер заработной платы",salaryInfo[2]);
-        System.out.printf("%-40s: %,d\n","Минимальный размер зарабтной платы",salaryInfo[3]);
+        System.out.printf("%-40s: %,.2f\n", "Средняя заработная плата", (double) salaryInfo[0] / salaryInfo[1]);
+        System.out.printf("%-40s: %,d\n", "Максимальный размер заработной платы", salaryInfo[2]);
+        System.out.printf("%-40s: %,d\n", "Минимальный размер зарабтной платы", salaryInfo[3]);
     }
 }

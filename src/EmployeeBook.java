@@ -9,7 +9,7 @@ public class EmployeeBook {
 
     public EmployeeBook(int numberOfEmployees) {
         employees = new Employee[numberOfEmployees];
-        freeVacancies=numberOfEmployees;
+        freeVacancies = numberOfEmployees;
     }
 
     public boolean hasVacancies() {
@@ -76,9 +76,6 @@ public class EmployeeBook {
         try (FileWriter writer = new FileWriter(SAVE_FILE, false)) {
             for (Employee person : employees) {
                 if (person != null) {
-//                    line = person.getId() + ";" + person.getFullName() + ";" + person.getShortName() + ";"
-//                            + person.getFirstName() + ";" + person.getSecondName() + ";" + person.getSurName() + ";"
-//                            + person.getAge() + ";" + person.getDepartmentId() + ";" + person.getSalary() + "\n";
                     writer.write(person.toString());
                 }
             }
@@ -111,23 +108,23 @@ public class EmployeeBook {
 
     // Методы индексации заработной платы
     public void IndexingSalary(double percentOfIndexing) {
-        double mult = 1 + percentOfIndexing / 100;
-        changeSalary(mult, (byte) 0);
+        double multiplier = 1 + percentOfIndexing / 100;
+        changeSalary(multiplier, (byte) 0);
     }
 
     public void IndexingSalary(double percentOfIndexing, byte depId) {
-        double mult = 1 + percentOfIndexing / 100;
-        changeSalary(mult, depId);
+        double multiplier = 1 + percentOfIndexing / 100;
+        changeSalary(multiplier, depId);
     }
 
     /* При индексации заработной платы применено округление до 100 рублей
     без округления увеличение/уменьшение на проценты дает "некрасивый" результат.
     Редко когда з/п бывает, например, 85 641 рубль
      */
-    private void changeSalary(double mult, byte depId) {
+    private void changeSalary(double multiplier, byte depId) {
         for (int i = 0; i < employees.length; i++) {
             if ((employees[i] != null) && (depId == 0 || employees[i].getDepartmentId() == depId)) {
-                employees[i].setSalary((int) Math.ceil((employees[i].getSalary() * mult) / 100) * 100);
+                employees[i].setSalary((int) Math.ceil((employees[i].getSalary() * multiplier) / 100) * 100);
             }
         }
     }
@@ -180,24 +177,56 @@ public class EmployeeBook {
      */
 
     private int[] salary(byte depId) {
-        int[] salaryArray=new int[4];
-        salaryArray[3]=Integer.MAX_VALUE;
-        for (Employee person :employees) {
-            if ((person!=null)&&(depId==0||depId==person.getDepartmentId())) {
-                salaryArray[0]+= person.getSalary();
+        int[] salaryArray = new int[4];
+        salaryArray[3] = Integer.MAX_VALUE;
+        for (Employee person : employees) {
+            if ((person != null) && (depId == 0 || depId == person.getDepartmentId())) {
+                salaryArray[0] += person.getSalary();
                 salaryArray[1]++;
-                salaryArray[2]=Math.max(salaryArray[2], person.getSalary());
-                salaryArray[3]=Math.min(salaryArray[3], person.getSalary());
+                salaryArray[2] = Math.max(salaryArray[2], person.getSalary());
+                salaryArray[3] = Math.min(salaryArray[3], person.getSalary());
             }
         }
         return salaryArray;
     }
 
     public int[] salaryInformation() {
-        return salary((byte)0);
+        return salary((byte) 0);
     }
 
     public int[] salaryInformation(byte depId) {
         return salary(depId);
+    }
+
+    public Employee findMinSalary(byte depId) {
+        if (freeVacancies == employees.length) {
+            return null;
+        }
+        int minIndex = 0;
+        int minValue = Integer.MAX_VALUE;
+        for (int i = 0; i < employees.length; i++) {
+            if ((employees[i] != null) && (depId == 0 || depId == employees[i].getDepartmentId())
+                    && (employees[i].getSalary() < minValue)) {
+                minValue = employees[i].getSalary();
+                minIndex = i;
+            }
+        }
+        return employees[minIndex];
+    }
+
+    public Employee findMaxSalary(byte depId) {
+        if (freeVacancies == employees.length) {
+            return null;
+        }
+        int maxIndex = 0;
+        int maxValue = 0;
+        for (int i = 0; i < employees.length; i++) {
+            if ((employees[i] != null) && (depId == 0 || depId == employees[i].getDepartmentId())
+                    && (employees[i].getSalary() > maxValue)) {
+                maxValue = employees[i].getSalary();
+                maxIndex = i;
+            }
+        }
+        return employees[maxIndex];
     }
 }
