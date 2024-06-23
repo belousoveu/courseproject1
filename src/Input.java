@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -159,7 +161,7 @@ public class Input {
             true - проверка выполняется (пустая строка запрещена)
             false - проверка не выполнется (можно вернуть пустую строку)
      */
-    private static String russianPatternString(String title, String errorMessage, boolean option) {
+    private static @NotNull String russianPatternString(String title, String errorMessage, boolean option) {
         String inputValue;
         Scanner sc = new Scanner(System.in);
 
