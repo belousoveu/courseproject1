@@ -5,15 +5,12 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        final int NUMBER_OF_EMPLOYEES = 10;
-        final String URL = "jdbc:mysql://localhost:3306/db_employees?createDatabaseIfNotExist=true" +
+        final String URL = "jdbc:mysql://localhost:3306/"+DbEmployees.DB_NAME+"?createDatabaseIfNotExist=true" +
                 "&serverTimezone=Europe/Moscow";
-        final String USER = "root";
-        final String PASSWORD = "root";
-        DbEmployees dbEmp = new DbEmployees(URL, USER, PASSWORD);
-        dbEmp.onStart(NUMBER_OF_EMPLOYEES);
+        DbEmployees dbEmp = new DbEmployees(URL, Const.USER, Const.PASSWORD);
+        dbEmp.onStart(Const.NUMBER_OF_EMPLOYEES);
 
-        EmployeeBook empBook = new EmployeeBook(NUMBER_OF_EMPLOYEES);
+        EmployeeBook empBook = new EmployeeBook(Const.NUMBER_OF_EMPLOYEES);
         empBook.readFromFile();
         byte choiceMenu;
         Scanner scMenu = new Scanner(System.in);

@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Input {
-    final private static byte NUMBER_OF_DEPARTMENTS = 5;
+    final static byte NUMBER_OF_DEPARTMENTS = 5;
 
     // Ввод чисел типа byte
     public static byte departmentId() {
@@ -162,6 +162,10 @@ public class Input {
             false - проверка не выполнется (можно вернуть пустую строку)
      */
     private static @NotNull String russianPatternString(String title, String errorMessage, boolean option) {
+        return russianPatternString(title, errorMessage, option, "[а-яА-Я- ]+");
+    }
+
+    private static @NotNull String russianPatternString(String title, String errorMessage, boolean option, String regEx) {
         String inputValue;
         Scanner sc = new Scanner(System.in);
 
@@ -169,7 +173,7 @@ public class Input {
             System.out.print(title);
             if (sc.hasNextLine()) {
                 inputValue = sc.nextLine();
-                if (inputValue.matches("[а-яА-Я- ]+") || (!option && inputValue.isEmpty())) {
+                if (inputValue.matches(regEx) || (!option && inputValue.isEmpty())) {
                     if (option && inputValue.isEmpty()) {
                         System.out.println(errorMessage);
                     } else {
@@ -229,5 +233,23 @@ public class Input {
         }
 
 
+    }
+
+    public static String[] setup() {
+        String[] info=new String[3];
+        System.out.println("Настройка исходных данных программы.\n");
+        info[0] = russianPatternString("Наименование организации: ",
+                "Строка содержит недопустимые символы",
+                true,
+                "[а-яА-Я-\" ]+");
+        int departmentsNumber=positiveInt("Количество отделов (по умолчанию "+Const.NUMBER_OF_DEPARTMENTS+"): ",
+                "Введите положительное целое число",
+                false);
+        info[1]=departmentsNumber==0 ? Integer.toString(Const.NUMBER_OF_DEPARTMENTS) : Integer.toString(departmentsNumber);
+        int employeesNumber=positiveInt("Количество сотрудников (по умолчанию "+Const.NUMBER_OF_EMPLOYEES+"): ",
+                "Введите положительное целое число",
+                false);
+        info[2]=employeesNumber==0 ? Integer.toString(Const.NUMBER_OF_EMPLOYEES) : Integer.toString(employeesNumber);
+        return info;
     }
 }
