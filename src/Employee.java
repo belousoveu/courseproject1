@@ -9,7 +9,7 @@ public class Employee {
     private int employeeId;
     private String firstName;
     private String secondName;
-    private String surName;
+    private String middleName;
     private String fullName;
     private String shortName;
     private int age;
@@ -18,17 +18,17 @@ public class Employee {
 
     // Конструкторы класса
     // вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
-    public Employee(String secondName, String firstName, String surName, int age, byte depId, int sal) {
+    public Employee(String secondName, String firstName, String middleName, int age, byte depId, int sal, int id) {
         this.secondName = secondName;
         this.firstName = firstName;
-        this.surName = surName;
-        fullName = secondName + " " + firstName + " " + surName;
+        this.middleName = middleName;
+        fullName = secondName + " " + firstName + " " + middleName;
         this.age = age;
         departmentId = depId;
         salary = sal;
-        shortName = returnShortName(secondName, firstName, surName);
+        shortName = returnShortName(secondName, firstName, middleName);
         currentId++;
-        employeeId = currentId;
+        employeeId = id;
 
     }
 
@@ -40,7 +40,7 @@ public class Employee {
         shortName = em[2];
         firstName = em[3];
         secondName = em[4];
-        surName = em[5];
+        middleName = em[5];
         age = Integer.parseInt(em[6]);
         departmentId = Byte.parseByte(em[7]);
         salary = Integer.parseInt(em[8]);
@@ -51,16 +51,16 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId && salary == employee.salary && Objects.equals(firstName, employee.firstName) && Objects.equals(secondName, employee.secondName) && Objects.equals(surName, employee.surName) && Objects.equals(fullName, employee.fullName) && Objects.equals(shortName, employee.shortName);
+        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId && salary == employee.salary && Objects.equals(firstName, employee.firstName) && Objects.equals(secondName, employee.secondName) && Objects.equals(middleName, employee.middleName) && Objects.equals(fullName, employee.fullName) && Objects.equals(shortName, employee.shortName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, firstName, secondName, surName, fullName, shortName, age, departmentId, salary);
+        return Objects.hash(employeeId, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
     }
 
     public String toString() {
-        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + surName + ";"
+        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
                 + age + ";" + departmentId + ";" + salary + "\n";
     }
 
@@ -107,15 +107,15 @@ public class Employee {
         return secondName;
     }
 
-    public String getSurName() {
-        return surName;
+    public String getMiddleName() {
+        return middleName;
     }
 
     // Блок методов set
     public void setProperties(String secondName, String firstName, String surName, int age, byte depId, int salary) {
         this.setFirstName(firstName);
         this.setSecondName(secondName);
-        this.setSurName(surName);
+        this.setMiddleName(surName);
         this.setFullName(secondName + " " + firstName + " " + surName);
         this.setShortName(returnShortName(secondName, firstName, surName));
         this.setAge(age);
@@ -139,8 +139,8 @@ public class Employee {
         this.secondName = s;
     }
 
-    public void setSurName(String s) {
-        this.surName = s;
+    public void setMiddleName(String s) {
+        this.middleName = s;
     }
 
     public void setAge(int age) {

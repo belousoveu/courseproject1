@@ -1,54 +1,83 @@
-
 import java.io.IOException;
+import java.util.Scanner;
 
-public class MenuEmployee {
-    int levelMenu = 0;
-    final private String[] MENU_TITLES = {"Главное меню:", "Операции:", "Аналитика:", "Отчеты:"};
-    final private String[][] MENU_ITEMS = {
-            {
-                    "1. Операции",
-                    "2. Аналитика",
-                    "3. Отчеты",
-                    "0. Выход"},
-            {
-                    "1. Прием нового сотрудника",
-                    "2. Редактировать данные сотрудника",
-                    "3. Увольнение сотрудника",
-                    "4. Индексация заработной платы по организации",
-                    "5. Индексация заработной платы по отделу",
-                    "0. Возврат в главное меню"},
-            {
-                    "1. Сведения по заработной плате по организации",
-                    "2. Сведения по заработной плате в разрезе отделов",
-                    "3. Сведения о сотруднике с максимальной заработной платой в организации",
-                    "4. Сведения о сотруднике с максимальной заработной платой в отделе",
-                    "5. Сведения о сотруднике с минимальной заработной платой в организации",
-                    "6. Сведения о сотруднике с минимальной заработной платой в отделе",
-                    "0. Возврат в главное меню"},
-            {
-                    "1. Сведения о сотрудниках организации",
-                    "2. Список сотрудников организации",
-                    "3. Сведения о сотрудниках отдела",
-                    "4. Сведения о сотрудниках с заработной платой меньше заданной",
-                    "5. Сведения о сотрудниках с заработной платой не меньше заданной",
-                    "6. Сведения о сотруднике по его идентификатору",
-                    "0. Возврат в главное меню"}
-    };
+public class TwoLevelMenu {
+    private int level;
+    private int choice;
+    private final String[] titles;
+    private final String[][] items;
 
-    void showMenu() {
-        System.out.println(MENU_TITLES[levelMenu]);
-        for (int i = 0; i < MENU_ITEMS[levelMenu].length; i++) {
-            System.out.println(MENU_ITEMS[levelMenu][i]);
+    public TwoLevelMenu(String[] titles, String[][] items) {
+        this.titles = titles;
+        this.items = items;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getChoice() {
+        return choice;
+    }
+
+    public String[] getTitles() {
+        return titles;
+    }
+
+    public String[][] getItems() {
+        return items;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public void setChoice(int choice) {
+        this.choice = choice;
+    }
+
+    public boolean runMenu() {
+        showMenu();
+        choice = getChoiceMenu();
+        if (choice == 0 && level == 0) {
+            return false;
+        }
+        if (choice == 0) {
+            level = 0;
+            return runMenu();
+        }
+        if (level == 0) {
+            level = choice;
+            return runMenu();
+        }
+        return true;
+    }
+
+    private int getChoiceMenu() {
+        System.out.print("Выберете пункт меню: ");
+        Scanner scMenu = new Scanner(System.in);
+        if (scMenu.hasNextByte()) {
+            byte choiceMenu = scMenu.nextByte();
+            if (validate(choiceMenu)) {
+                return choiceMenu;
+            }
+        }
+        System.out.println("Некорректный выбор");
+        return getChoiceMenu();
+    }
+
+
+    private void showMenu() {
+        System.out.println(titles[level]);
+        for (int i = 0; i < items[level].length; i++) {
+            System.out.println(items[level][i]);
         }
     }
 
-    public boolean validate(byte choiceMenu) {
-        return choiceMenu >= 0 && choiceMenu < MENU_ITEMS[levelMenu].length;
+    private boolean validate(byte choiceMenu) {
+        return choiceMenu >= 0 && choiceMenu < items[level].length;
     }
 
-    public boolean exit(byte choiceMenu) {
-        return levelMenu == 0 && choiceMenu == 0;
-    }
 
     public void executeChoice(byte choiceMenu, EmployeeBook empBook) throws IOException {
         int empId;
@@ -61,58 +90,58 @@ public class MenuEmployee {
         double percentOfIndexing;
 
 
-        if (levelMenu == 0) {
-            levelMenu = choiceMenu;
+        if (level == 0) {
+            level = choiceMenu;
 //            this.showMenu();
         } else if (choiceMenu == 0) {
-            levelMenu = 0;
+            level = 0;
 //            this.showMenu();
         } else {
 //            System.out.println(MENU_ITEMS[levelMenu][choiceMenu - 1]);
             showTitle(choiceMenu);
-            switch (levelMenu) {
+            switch (level) {
                 case 1:
                     switch (choiceMenu) {
-                        case 1: //"1. Прием нового сотрудника"
-                            if (empBook.hasVacancies()) {
-                                secondName = Input.secondName();
-                                firstName = Input.firstName();
-                                surname = Input.surName();
-                                age = Input.age();
-                                depId = Input.departmentId();
-                                salary = Input.salary();
-                                empBook.addNewEmployee(secondName, firstName, surname, age, depId, salary);
-                                Display.string("Добавлен новый сотрудник");
-                            } else {
-                                Display.string("Отсутствуют свободные вакансии");
-                            }
-                            pressEnterToContinue();
-                            break;
-                        case 2: //"2. Редактировать данные сотрудника"
-                            empId = Input.employeeId();
-                            if (Input.editEmployeeData(empBook, empId)) {
-                                Display.stringf("Данные сотрудника с ID=%d обновлены", empId);
-                            } else {
-                                Display.stringf("Сотрудник с ID=%d отсутсвует в базе", empId);
-                            }
-                            pressEnterToContinue();
-                            break;
-                        case 3: //"3. Увольнение сотрудника"
-                            empId = Input.employeeId();
-                            Display.dismissalOfEmployee(empBook, empId);
-                            pressEnterToContinue();
-                            break;
+//                        case 1: //"1. Прием нового сотрудника"
+//                            if (empBook.hasVacancies()) {
+//                                secondName = Input.secondName();
+//                                firstName = Input.firstName();
+//                                surname = Input.middleName();
+//                                age = Input.age();
+//                                depId = Input.departmentId();
+//                                salary = Input.salary();
+//                                empBook.addNewEmployee(secondName, firstName, surname, age, depId, salary);
+//                                Display.message("Добавлен новый сотрудник");
+//                            } else {
+//                                Display.message("Отсутствуют свободные вакансии");
+//                            }
+//                            pressEnterToContinue();
+//                            break;
+//                        case 2: //"2. Редактировать данные сотрудника"
+//                            empId = Input.employeeId();
+//                            if (Input.editEmployeeData(empBook, empId)) {
+//                                Display.formatMessage("Данные сотрудника с ID=%d обновлены", empId);
+//                            } else {
+//                                Display.formatMessage("Сотрудник с ID=%d отсутсвует в базе", empId);
+//                            }
+//                            pressEnterToContinue();
+//                            break;
+//                        case 3: //"3. Увольнение сотрудника"
+//                            empId = Input.employeeId();
+//                            Display.dismissalOfEmployee(empBook, empId);
+//                            pressEnterToContinue();
+//                            break;
                         case 4: //"4. Индексация заработной платы по организации"
                             percentOfIndexing = Input.percentOfIndexing();
                             empBook.IndexingSalary(percentOfIndexing);
-                            Display.string("Расчитана индексация заработной платы в целом по организации");
+                            Display.message("Расчитана индексация заработной платы в целом по организации");
                             pressEnterToContinue();
                             break;
                         case 5: //"5. Индексация заработной платы по отделу"
                             percentOfIndexing = Input.percentOfIndexing();
                             depId = Input.departmentId();
                             empBook.IndexingSalary(percentOfIndexing, depId);
-                            Display.stringf("Расчитана индексация заработной платы по отделу ID=%d", depId);
+                            Display.formatMessage("Расчитана индексация заработной платы по отделу ID=%d", depId);
                             pressEnterToContinue();
                     }
                     break;
@@ -187,7 +216,7 @@ public class MenuEmployee {
 
     // Вспомогательные и проверочные методы
     private void showTitle(int choiceMenu) {
-        Display.showTitle(MENU_TITLES[levelMenu], MENU_ITEMS[levelMenu][choiceMenu - 1]);
+        Display.showTitle(Const.MAIN_MENU_TITLES[level], Const.MAIN_MENU_ITEMS[level][choiceMenu - 1]);
     }
 
     private static void pressEnterToContinue() throws IOException {

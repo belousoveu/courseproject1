@@ -5,7 +5,6 @@ public class EmployeeBook {
     final private String SAVE_FILE = "employees.txt";
     private int freeVacancies;
     private Employee[] employees;
-//    private String organizationName = "Рога и Копыта";
 
     public EmployeeBook(int numberOfEmployees) {
         employees = new Employee[numberOfEmployees];
@@ -18,7 +17,7 @@ public class EmployeeBook {
 
     public boolean addNewEmployee(String secondName, String firstName, String surname, int age, byte depId, int salary) {
         if (hasVacancies()) {
-            Employee emp = new Employee(secondName, firstName, surname, age, depId, salary);
+            Employee emp = new Employee(secondName, firstName, surname, age, depId, salary,0);
             addEmployee(emp);
             return true;
         }

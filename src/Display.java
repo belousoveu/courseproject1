@@ -116,7 +116,7 @@ public class Display {
         if (empArray != null && empArray.length != 0) {
             for (Employee emp : empArray) {
                 ShowEmployeeData(empBook, emp.getId());
-                string("");
+                message("");
             }
         } else {
             System.out.println("Список сотруников пуст.");
@@ -145,11 +145,11 @@ public class Display {
     }
 
     // Вспомогательные функции
-    public static void string(String string) {
+    public static void message(String string) {
         System.out.println(string);
     }
 
-    public static void stringf(String s, int value) {
+    public static void formatMessage(String s, Object... value) {
         System.out.printf(s, value);
     }
 

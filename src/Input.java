@@ -4,7 +4,6 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class Input {
-    final static byte NUMBER_OF_DEPARTMENTS = 5;
 
     // Ввод чисел типа byte
     public static byte departmentId() {
@@ -25,14 +24,14 @@ public class Input {
     private static byte departmentId(String title, boolean option) {
         Scanner sc = new Scanner(System.in);
         byte inputValue;
-        String errorMessage = "Необходимо ввести целое число в от 1 до " + Input.NUMBER_OF_DEPARTMENTS;
+        String errorMessage = "Необходимо ввести целое число в от 1 до " + Const.numberOfDepartments;
         errorMessage += (option ? "" : "0 - оставить предыдущее значение");
 
         do {
             System.out.print(title);
             if (sc.hasNextByte()) {
                 inputValue = sc.nextByte();
-                if ((inputValue >= 1 && inputValue <= Input.NUMBER_OF_DEPARTMENTS) || (inputValue == 0 && !option)) {
+                if ((inputValue >= 1 && inputValue <= Const.numberOfDepartments) || (inputValue == 0 && !option)) {
                     return inputValue;
                 } else {
                     System.out.println(errorMessage);
@@ -136,14 +135,14 @@ public class Input {
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String surName() {
+    public static String middleName() {
         String title = "Отчество: ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, true);
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String surName(String currentValue) {
+    public static String middleName(String currentValue) {
         String title = "Отчество (" + currentValue + "): ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, false);
@@ -213,43 +212,53 @@ public class Input {
     }
 
     //Методы группового ввода данных
-    public static boolean editEmployeeData(EmployeeBook empBook, int empId) {
+    public static boolean editEmployeeData(Employee employee) {
 
-        Employee person = empBook.searchById(empId);
 
-        if (person != null) {
-            String secondName = secondName(person.getSecondName());
-            String firstName = firstName(person.getFirstName());
-            String surName = surName(person.getSurName());
-            int age = age(person.getAge());
-            byte depId = Input.departmentId(person.getDepartmentId());
-            int salary = Input.salary(person.getSalary());
+        String secondName = secondName(employee.getSecondName());
+        String firstName = firstName(employee.getFirstName());
+        String middleName = middleName(employee.getMiddleName());
+        int age = age(employee.getAge());
+        byte depId = Input.departmentId(employee.getDepartmentId());
+        int salary = Input.salary(employee.getSalary());
 
-            person.setProperties(secondName, firstName, surName, age, depId, salary);
-
-            return true;
-        } else {
+        if (secondName.equals(employee.getSecondName()) &&
+                firstName.equals(employee.getFirstName()) &&
+                middleName.equals(employee.getMiddleName()) &&
+                age == employee.getAge() &&
+                depId == employee.getDepartmentId() &&
+                salary == employee.getSalary()) {
             return false;
+        } else {
+            employee.setProperties(secondName, firstName, middleName, age, depId, salary);
         }
-
-
+        return true;
     }
 
-    public static String[] setup() {
-        String[] info=new String[3];
+    public static void setup() {
         System.out.println("Настройка исходных данных программы.\n");
-        info[0] = russianPatternString("Наименование организации: ",
+        Const.companyName = russianPatternString("Наименование организации (текущее значение  -  " + Const.companyName + "): ",
                 "Строка содержит недопустимые символы",
-                true,
+                false,
                 "[а-яА-Я-\" ]+");
-        int departmentsNumber=positiveInt("Количество отделов (по умолчанию "+Const.NUMBER_OF_DEPARTMENTS+"): ",
+        int departmentsNumber = positiveInt("Количество отделов (текущее значение - " + Const.numberOfDepartments + "): ",
                 "Введите положительное целое число",
                 false);
-        info[1]=departmentsNumber==0 ? Integer.toString(Const.NUMBER_OF_DEPARTMENTS) : Integer.toString(departmentsNumber);
-        int employeesNumber=positiveInt("Количество сотрудников (по умолчанию "+Const.NUMBER_OF_EMPLOYEES+"): ",
+        Const.numberOfDepartments = departmentsNumber == 0 ? Const.numberOfDepartments : departmentsNumber;
+        int employeesNumber = positiveInt("Количество сотрудников (текущее значение -" + Const.numberOfEmployees + "): ",
                 "Введите положительное целое число",
                 false);
-        info[2]=employeesNumber==0 ? Integer.toString(Const.NUMBER_OF_EMPLOYEES) : Integer.toString(employeesNumber);
-        return info;
+        Const.numberOfEmployees = employeesNumber == 0 ? Const.numberOfEmployees : employeesNumber;
+    }
+
+    public static Employee newEmployee() {
+        String secondName = secondName();
+        String firstName = firstName();
+        String middleName = middleName();
+        int age = age();
+        byte depId = departmentId();
+        int salary = salary();
+
+        return new Employee(secondName, firstName, middleName, age, depId, salary, 0);
     }
 }
