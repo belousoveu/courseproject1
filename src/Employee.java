@@ -9,7 +9,7 @@ public class Employee {
     private int employeeId;
     private String firstName;
     private String secondName;
-    private String surName;
+    private String middleName;
     private String fullName;
     private String shortName;
     private int age;
@@ -17,22 +17,21 @@ public class Employee {
     private int salary;
 
     // Конструкторы класса
-    // вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
-    public Employee(String secondName, String firstName, String surName, int age, byte depId, int sal) {
+    // Вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
+    public Employee(String secondName, String firstName, String middleName, int age, byte depId, int sal) {
         this.secondName = secondName;
         this.firstName = firstName;
-        this.surName = surName;
-        fullName = secondName + " " + firstName + " " + surName;
+        this.middleName = middleName;
+        fullName = secondName + " " + firstName + " " + middleName;
         this.age = age;
         departmentId = depId;
         salary = sal;
-        shortName = returnShortName(secondName, firstName, surName);
+        shortName = returnShortName(secondName, firstName, middleName);
         currentId++;
         employeeId = currentId;
-
     }
 
-    // вариант 2. параметры передаются одной форматированной строкой. используется для чтения сохраненных данных из файла
+    // Вариант 2. параметры передаются одной форматированной строкой. Используется для чтения сохраненных данных из файла
     public Employee(String line) {
         String[] em = lineToArray(line);
         employeeId = Integer.parseInt(em[0]);
@@ -40,10 +39,21 @@ public class Employee {
         shortName = em[2];
         firstName = em[3];
         secondName = em[4];
-        surName = em[5];
+        middleName = em[5];
         age = Integer.parseInt(em[6]);
         departmentId = Byte.parseByte(em[7]);
         salary = Integer.parseInt(em[8]);
+    }
+
+    public void update(String secondName, String firstName, String surName, int age, byte depId, int salary) {
+        this.setFirstName(firstName);
+        this.setSecondName(secondName);
+        this.setMiddleName(surName);
+        this.setFullName(secondName + " " + firstName + " " + surName);
+        this.setShortName(returnShortName(secondName, firstName, surName));
+        this.setAge(age);
+        this.setDepartmentId(depId);
+        this.setSalary(salary);
     }
 
     @Override
@@ -51,20 +61,22 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId && salary == employee.salary && Objects.equals(firstName, employee.firstName) && Objects.equals(secondName, employee.secondName) && Objects.equals(surName, employee.surName) && Objects.equals(fullName, employee.fullName) && Objects.equals(shortName, employee.shortName);
+        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId &&
+                salary == employee.salary && firstName.equals(employee.firstName) && secondName.equals(employee.secondName) &&
+                middleName.equals(employee.middleName) && fullName.equals(employee.fullName) && shortName.equals(employee.shortName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, firstName, secondName, surName, fullName, shortName, age, departmentId, salary);
+        return Objects.hash(employeeId, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
     }
 
     public String toString() {
-        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + surName + ";"
+        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
                 + age + ";" + departmentId + ";" + salary + "\n";
     }
-
     // локальные вспомогательные методы
+
     private @NotNull String returnShortName(String a, @NotNull String b, @NotNull String c) {
         return a + " " + b.charAt(0) + "." + c.charAt(0) + ".";
     }
@@ -73,8 +85,8 @@ public class Employee {
     private String @NotNull [] lineToArray(@NotNull String line) {
         return line.split(";");
     }
-
     // Блок методов get
+
     public int getId() {
         return employeeId;
     }
@@ -107,22 +119,11 @@ public class Employee {
         return secondName;
     }
 
-    public String getSurName() {
-        return surName;
+    public String getMiddleName() {
+        return middleName;
     }
 
     // Блок методов set
-    public void setProperties(String secondName, String firstName, String surName, int age, byte depId, int salary) {
-        this.setFirstName(firstName);
-        this.setSecondName(secondName);
-        this.setSurName(surName);
-        this.setFullName(secondName + " " + firstName + " " + surName);
-        this.setShortName(returnShortName(secondName, firstName, surName));
-        this.setAge(age);
-        this.setDepartmentId(depId);
-        this.setSalary(salary);
-    }
-
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
@@ -139,8 +140,8 @@ public class Employee {
         this.secondName = s;
     }
 
-    public void setSurName(String s) {
-        this.surName = s;
+    public void setMiddleName(String s) {
+        this.middleName = s;
     }
 
     public void setAge(int age) {

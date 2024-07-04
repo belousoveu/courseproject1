@@ -1,3 +1,5 @@
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -16,10 +18,13 @@ public class Input {
         return value == 0 ? currentValue : value;
     }
 
-    /* Параметр option - выпоняет проверку на допустимость 0
-          true - проверка выполняется (значение 0 запрещено)
-          false - проверка не выполнется (можно вернуть 0)
-   */
+    /**
+     * Ввод ID отдела (byte)
+     *
+     * @param title  - заголовок
+     * @param option - false- проверка не выполняется (можно вернуть 0), true - проверка выполняется (значение 0 запрещено)
+     * @return - возвращаемое значение число типа byte в промежутке от 0 до NUMBER_OF_DEPARTMENTS
+     */
     private static byte departmentId(String title, boolean option) {
         Scanner sc = new Scanner(System.in);
         byte inputValue;
@@ -39,7 +44,6 @@ public class Input {
                 System.out.println(errorMessage);
                 sc.next();
             }
-
         } while (true);
     }
 
@@ -76,9 +80,13 @@ public class Input {
         return value == 0 ? currentValue : value;
     }
 
-    /* Параметр option - выпоняет проверку на допустимость 0
-            true - проверка выполняется (значение 0 запрещено)
-            false - проверка не выполнется (можно вернуть 0)
+    /**
+     * Ввод не отрицательных чисел типа int
+     *
+     * @param title        - заголовок
+     * @param errorMessage - сообщение об ошибке
+     * @param option       - false- проверка не выполняется (можно вернуть 0), true - проверка выполняется (значение 0 запрещено)
+     * @return - возвращаемое значение число типа int
      */
     private static int positiveInt(String title, String errorMessage, boolean option) {
         int inputValue;
@@ -103,14 +111,14 @@ public class Input {
 
     // Ввод строковых значений
     //
-    public static String secondName() {
+    public static @NotNull String secondName() {
         String title = "Фамилия: ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, true);
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String secondName(String currentValue) {
+    public static @NotNull String secondName(String currentValue) {
         String title = "Фамилия (" + currentValue + ") : ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, false);
@@ -119,14 +127,14 @@ public class Input {
     }
 
 
-    public static String firstName() {
+    public static @NotNull String firstName() {
         String title = "Имя: ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, true);
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String firstName(String currentValue) {
+    public static @NotNull String firstName(String currentValue) {
         String title = "Имя (" + currentValue + "): ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, false);
@@ -134,14 +142,14 @@ public class Input {
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String surName() {
+    public static @NotNull String middleName() {
         String title = "Отчество: ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, true);
         return toCapitalFirstLetter(inputValue);
     }
 
-    public static String surName(String currentValue) {
+    public static @NotNull String middleName(String currentValue) {
         String title = "Отчество (" + currentValue + "): ";
         String errorMessage = "Строка содержит недопустимые символы";
         String inputValue = russianPatternString(title, errorMessage, false);
@@ -149,17 +157,19 @@ public class Input {
         return toCapitalFirstLetter(inputValue);
     }
 
-    private static String toCapitalFirstLetter(String Value) {
+    private static @NotNull String toCapitalFirstLetter(@NotNull String Value) {
         String FirstLetter = Value.toLowerCase().substring(0, 1).toUpperCase(Locale.ROOT);
         return FirstLetter + Value.substring(1).toLowerCase();
     }
 
 
-    /* Параметр option - выпоняет проверку на пустое значение
-            true - проверка выполняется (пустая строка запрещена)
-            false - проверка не выполнется (можно вернуть пустую строку)
+    /**
+     * @param title        - заголовок
+     * @param errorMessage - сообщение об ошибке
+     * @param option       - false - пустая строка в качестве ответа разрешена, true - пустая строка в качестве ответа не разрешена
+     * @return - возвращает введенное строковое значение, допустимыми значениями являются символы кириллицы, пробел и знак дефиса.
      */
-    private static String russianPatternString(String title, String errorMessage, boolean option) {
+    private static @NotNull String russianPatternString(String title, String errorMessage, boolean option) {
         String inputValue;
         Scanner sc = new Scanner(System.in);
 
@@ -167,7 +177,7 @@ public class Input {
             System.out.print(title);
             if (sc.hasNextLine()) {
                 inputValue = sc.nextLine();
-                if (inputValue.matches("[а-яА-Я- ]+") || (!option && inputValue.isEmpty())) {
+                if (inputValue.matches("[а-яёЁА-Я- ]+") || (!option && inputValue.isEmpty())) {
                     if (option && inputValue.isEmpty()) {
                         System.out.println(errorMessage);
                     } else {
@@ -206,26 +216,4 @@ public class Input {
         } while (true);
     }
 
-    //Методы группового ввода данных
-    public static boolean editEmployeeData(EmployeeBook empBook, int empId) {
-
-        Employee person = empBook.searchById(empId);
-
-        if (person != null) {
-            String secondName = secondName(person.getSecondName());
-            String firstName = firstName(person.getFirstName());
-            String surName = surName(person.getSurName());
-            int age = age(person.getAge());
-            byte depId = Input.departmentId(person.getDepartmentId());
-            int salary = Input.salary(person.getSalary());
-
-            person.setProperties(secondName, firstName, surName, age, depId, salary);
-
-            return true;
-        } else {
-            return false;
-        }
-
-
-    }
 }

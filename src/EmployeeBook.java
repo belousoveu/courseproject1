@@ -4,9 +4,9 @@ import java.util.ArrayList;
 public class EmployeeBook {
     final private String SAVE_FILE = "employees.txt";
     private int freeVacancies;
-    private Employee[] employees;
-//    private String organizationName = "Рога и Копыта";
+    private final Employee[] employees;
 
+    //Constructor
     public EmployeeBook(int numberOfEmployees) {
         employees = new Employee[numberOfEmployees];
         freeVacancies = numberOfEmployees;
@@ -16,16 +16,8 @@ public class EmployeeBook {
         return freeVacancies > 0;
     }
 
-    public boolean addNewEmployee(String secondName, String firstName, String surname, int age, byte depId, int salary) {
-        if (hasVacancies()) {
-            Employee emp = new Employee(secondName, firstName, surname, age, depId, salary);
-            addEmployee(emp);
-            return true;
-        }
-        return false;
-    }
-
-    private void addEmployee(Employee emp) {
+    //Add Employee
+    public void addEmployee(Employee emp) {
         for (int i = 0; i < employees.length; i++) {
             if (employees[i] == null || employees[i].getId() == 0) {
                 employees[i] = emp;
@@ -35,6 +27,7 @@ public class EmployeeBook {
         }
     }
 
+    //Delete Employee
     public void deleteEmployee(int id) {
         for (int i = 0; i < employees.length; i++) {
             if (employees[i] != null && employees[i].getId() == id) {
@@ -45,18 +38,16 @@ public class EmployeeBook {
         }
     }
 
-    public Employee searchById(int empId) {
-        Employee searchResult = null;
+    public Employee getEmployeeById(int empId) {
         for (Employee person : employees) {
             if (person != null && person.getId() == empId) {
-                searchResult = person;
-                break;
+                return person;
             }
         }
-        return searchResult;
+        return null;
     }
 
-    private int maxID() {
+    private int maxId() {
         int max = 0;
         for (Employee person : employees) {
             if (person != null) {
@@ -95,84 +86,92 @@ public class EmployeeBook {
             }
             br.close();
             fr.close();
-            Employee.currentId = maxID();
+            Employee.currentId = maxId();
 
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    // Методы индексации заработной платы
-    public void IndexingSalary(double percentOfIndexing) {
+
+    // Метод индексации заработной платы
+
+    public int IndexingSalary(double percentOfIndexing, byte depId) {
         double multiplier = 1 + percentOfIndexing / 100;
-        changeSalary(multiplier, (byte) 0);
+        return changeSalary(multiplier, depId);
     }
 
-    public void IndexingSalary(double percentOfIndexing, byte depId) {
-        double multiplier = 1 + percentOfIndexing / 100;
-        changeSalary(multiplier, depId);
+    private int changeSalary(double multiplier, byte depId) {
+        return changeSalary(multiplier, depId, 2);
     }
 
-    /* При индексации заработной платы применено округление до 100 рублей
-    без округления увеличение/уменьшение на проценты дает "некрасивый" результат.
-    Редко когда з/п бывает, например, 85 641 рубль
+    /**
+     * Метод индексации заработной платы
+     *
+     * @param multiplier     - коэффициент индексации заработной платы
+     * @param depId          - Id отдела (при depId==0 - в целом по организации)
+     * @param roundingDegree степень округления (по умолчанию 2, т.е. округление до сотен рублей)
+     * @return количество сотрудников, которым была проиндексирована заработная плата
      */
-    private void changeSalary(double multiplier, byte depId) {
+    private int changeSalary(double multiplier, byte depId, int roundingDegree) {
+        int counter = 0;
+        double scale = Math.pow(10, roundingDegree);
         for (Employee employee : employees) {
             if ((employee != null) && (depId == 0 || employee.getDepartmentId() == depId)) {
-                employee.setSalary((int) Math.ceil((employee.getSalary() * multiplier) / 100) * 100);
+                employee.setSalary((int) (Math.round((employee.getSalary() * multiplier) / scale) * scale));
+                counter++;
             }
         }
+        return counter;
     }
 
-    //Методы формирования списков для вывода в консоль
-    public ArrayList<String> getListOfShortNames() {
-        ArrayList<String> list = new ArrayList<>();
-        for (Employee person : employees) {
-            if (person != null) {
-                list.add(person.getShortName());
-            }
-        }
-        return list;
+    //Методы выборки сотрудников по различным параметрам
+
+    public Employee[] getActualEmployees() {
+        return getActualEmployees((byte) 0);
     }
 
-    public ArrayList<Employee> getListOfEmployees() {
-        return getListOfEmployees((byte) 0);
-    }
-
-    public ArrayList<Employee> getListOfEmployees(byte depId) {
+    public Employee[] getActualEmployees(byte depId) {
         ArrayList<Employee> list = new ArrayList<>();
-        for (Employee person : employees) {
+        for (Employee person : employees)
             if ((person != null) && (depId == 0 || person.getDepartmentId() == depId)) {
                 list.add(person);
             }
-        }
-        return list;
+        return list.toArray(new Employee[0]);
     }
 
-    public ArrayList<Employee> getListOfEmployees(int targetSalary, boolean option) {
+    /**
+     * Метод возвращает выборку сотрудников по заработной плате
+     *
+     * @param targetSalary - целевой размер заработной платы
+     * @param mode         - 0 - меньше указанной заработной платы, 1 - больше или равно указанной заработной платы
+     * @return массив сотрудников соответствующих условиям выборки по заработной плате
+     */
+    public Employee[] getActualEmployees(int targetSalary, int mode) {
         ArrayList<Employee> list = new ArrayList<>();
         for (Employee person : employees) {
             if (person != null) {
-                if (option && person.getSalary() >= targetSalary) {
+                if (mode == 1 && person.getSalary() >= targetSalary) {
                     list.add(person);
-                } else if (!option && person.getSalary() < targetSalary) {
+                } else if (mode == 0 && person.getSalary() < targetSalary) {
                     list.add(person);
                 }
             }
         }
-        return list;
+        return list.toArray(new Employee[0]);
     }
-    // Методы аналитики по заработной плате
 
-    /* Метод возвращает массив со сведениями о заработной плате
-    [0] - суммарное значение заработной платы
-    [1] - количество сотрудников
-    [2] - максимальное значение заработной плата
-    [3] - минимальное значение заработной плата
+    /**
+     * Метод возвращает массив со сведениями о заработной плате
+     *
+     * @param depId - Id отдела (при depId==0 - в целом по организации)
+     * @return массив со сведениями о заработной плате
+     * [0] - суммарное значение заработной платы
+     * [1] - количество сотрудников
+     * [2] - максимальное значение заработной платы
+     * [3] - минимальное значение заработной платы
      */
-
-    private int[] salary(byte depId) {
+    public int[] getSalarySummary(byte depId) {
         int[] salaryArray = new int[4];
         salaryArray[3] = Integer.MAX_VALUE;
         for (Employee person : employees) {
@@ -186,15 +185,7 @@ public class EmployeeBook {
         return salaryArray;
     }
 
-    public int[] salaryInformation() {
-        return salary((byte) 0);
-    }
-
-    public int[] salaryInformation(byte depId) {
-        return salary(depId);
-    }
-
-    public Employee[] findMinSalary(byte depId) {
+    public Employee[] getEmployeeWithMinSalary(byte depId) {
         if (freeVacancies == employees.length) {
             return null;
         }
@@ -215,7 +206,7 @@ public class EmployeeBook {
         return resultArray.toArray(new Employee[0]);
     }
 
-    public Employee[] findMaxSalary(byte depId) {
+    public Employee[] getEmployeeWithMaxSalary(byte depId) {
         if (freeVacancies == employees.length) {
             return null;
         }
