@@ -68,7 +68,7 @@ public class DbEmployees {
                     return false;
                 }
             } else {
-                // получение количества записей действующих сотрудников в таблице. Присвоение значения freeVacancies
+                // Получение количества записей действующих сотрудников в таблице. Присвоение значения freeVacancies
                 int numberOfActiveEmployees = getNumberOfActiveEmployees(statement);
                 if (numberOfActiveEmployees >= 0) {
                     freeVacancies = Const.numberOfEmployees - numberOfActiveEmployees;
@@ -288,6 +288,43 @@ public class DbEmployees {
 
     public int indexingSalary(double percentOfIndexing) {
         return indexingSalary(percentOfIndexing, 0);
+    }
+
+    /**
+     * Возвращает массив с данными по заработной плате
+     * @param depId - идентификатор отдела (0 - по всей организации)
+     * @return массив с данными по заработной плате
+     * [0] - общая сумма заработной платы
+     * [1] - максимальная величина заработной платы
+     * [2] - минимальная величина заработной платы
+     * [3] - количество сотрудников для которых производится выборка
+     * при ошибке получения данных из таблицы - возвращает пустой массив
+     */
+    public int[] getSalaryInformation(byte depId) {
+        try {
+            Connection connection = DriverManager.getConnection(url, user, password);
+            Statement statement = connection.createStatement();
+            String sql = "SELECT SUM(salary) AS total_salary, MAX(salary) AS max_salary, MIN(salary) AS min_salary," +
+                    " COUNT(*) AS total_records FROM employees WHERE active=1";
+            if (depId!= 0 ) {
+                sql+=" AND department_id="  + depId;
+            }
+            ResultSet rs = statement.executeQuery(sql);
+            int[] salaryInformation = new int[4];
+            if (rs.next())  {
+                salaryInformation[0] = rs.getInt("total_salary");
+                salaryInformation[1] = rs.getInt("max_salary");
+                salaryInformation[2] = rs.getInt("min_salary");
+                salaryInformation[3] = rs.getInt("total_records");
+            }
+            rs.close();
+            statement.close();
+            connection.close();
+            return salaryInformation;
+        } catch (SQLException e)  {
+            handleSQLException(e, "Ошибка получения информации о зарплатах");
+            return new int[0];
+        }
     }
 
     // Методы работы с таблицей `departments`

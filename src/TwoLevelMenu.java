@@ -101,7 +101,7 @@ public class TwoLevelMenu {
             showTitle(choiceMenu);
             switch (level) {
                 case 1:
-                    switch (choiceMenu) {
+//                    switch (choiceMenu) {
 //                        case 1: //"1. Прием нового сотрудника"
 //                            if (empBook.hasVacancies()) {
 //                                secondName = Input.secondName();
@@ -131,29 +131,29 @@ public class TwoLevelMenu {
 //                            Display.dismissalOfEmployee(empBook, empId);
 //                            pressEnterToContinue();
 //                            break;
-                        case 4: //"4. Индексация заработной платы по организации"
-                            percentOfIndexing = Input.percentOfIndexing();
-                            empBook.IndexingSalary(percentOfIndexing);
-                            Display.message("Расчитана индексация заработной платы в целом по организации");
-                            pressEnterToContinue();
-                            break;
-                        case 5: //"5. Индексация заработной платы по отделу"
-                            percentOfIndexing = Input.percentOfIndexing();
-                            depId = Input.departmentId();
-                            empBook.IndexingSalary(percentOfIndexing, depId);
-                            Display.formatMessage("Расчитана индексация заработной платы по отделу ID=%d", depId);
-                            pressEnterToContinue();
-                    }
+//                        case 4: //"4. Индексация заработной платы по организации"
+//                            percentOfIndexing = Input.percentOfIndexing();
+//                            empBook.IndexingSalary(percentOfIndexing);
+//                            Display.message("Расчитана индексация заработной платы в целом по организации");
+//                            pressEnterToContinue();
+//                            break;
+//                        case 5: //"5. Индексация заработной платы по отделу"
+//                            percentOfIndexing = Input.percentOfIndexing();
+//                            depId = Input.departmentId();
+//                            empBook.IndexingSalary(percentOfIndexing, depId);
+//                            Display.formatMessage("Расчитана индексация заработной платы по отделу ID=%d", depId);
+//                            pressEnterToContinue();
+//                    }
                     break;
                 case 2:
                     switch (choiceMenu) {
                         case 1: //"1. Сведения по заработной плате по организации"
-                            Display.salaryInformation(empBook);
+//                            Display.salaryInformation(empBook);
                             pressEnterToContinue();
                             break;
                         case 2: //"2. Сведения по заработной плате в разрезе отделов"
                             depId = Input.departmentId();
-                            Display.salaryInformation(empBook, depId);
+//                            Display.salaryInformation(empBook, depId);
                             pressEnterToContinue();
                             break;
                         case 3: //"3. Сведения о сотруднике с максимальной заработной платой в организации"

@@ -17,7 +17,7 @@ public class Employee {
     private int salary;
 
     // Конструкторы класса
-    // вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
+    // Вариант 1. используется при вводе нового сотрудника. Параметры передаются в явном виде
     public Employee(String secondName, String firstName, String middleName, int age, byte depId, int sal, int id) {
         this.secondName = secondName;
         this.firstName = firstName;
@@ -32,7 +32,7 @@ public class Employee {
 
     }
 
-    // вариант 2. параметры передаются одной форматированной строкой. используется для чтения сохраненных данных из файла
+    // Вариант 2. параметры передаются одной форматированной строкой. Используется для чтения сохраненных данных из файла
     public Employee(String line) {
         String[] em = lineToArray(line);
         employeeId = Integer.parseInt(em[0]);
