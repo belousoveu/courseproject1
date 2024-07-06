@@ -19,7 +19,7 @@ public class EmployeeBook {
     //Add Employee
     public void addEmployee(Employee emp) {
         for (int i = 0; i < employees.length; i++) {
-            if (employees[i] == null || employees[i].getId() == 0) {
+            if (employees[i] == null ) {
                 employees[i] = emp;
                 freeVacancies--;
                 break;
@@ -44,7 +44,7 @@ public class EmployeeBook {
                 return person;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Сотрудник с ID=" + empId + " отсутствует в базе");
     }
 
     private int maxId() {
@@ -68,7 +68,7 @@ public class EmployeeBook {
             }
             writer.flush();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Ошибка при сохранении данных в файл.");
         }
     }
 
@@ -86,10 +86,10 @@ public class EmployeeBook {
             }
             br.close();
             fr.close();
-            Employee.currentId = maxId();
+            Employee.setCurrentId(maxId());
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Ошибка при чтении данных из файла. Данные не загружены");
         }
     }
 
@@ -186,10 +186,10 @@ public class EmployeeBook {
     }
 
     public Employee[] getEmployeeWithMinSalary(byte depId) {
-        if (freeVacancies == employees.length) {
-            return null;
-        }
         ArrayList<Employee> resultArray = new ArrayList<>();
+        if (freeVacancies == employees.length) {
+            return resultArray.toArray(new Employee[0]);
+        }
         int minValue = Integer.MAX_VALUE;
         for (Employee employee : employees) {
             if ((employee != null) && (depId == 0 || depId == employee.getDepartmentId())
@@ -207,10 +207,10 @@ public class EmployeeBook {
     }
 
     public Employee[] getEmployeeWithMaxSalary(byte depId) {
-        if (freeVacancies == employees.length) {
-            return null;
-        }
         ArrayList<Employee> resultArray = new ArrayList<>();
+        if (freeVacancies == employees.length) {
+            return resultArray.toArray(new Employee[0]);
+        }
         int maxValue = 0;
         for (Employee value : employees) {
             if ((value != null) && (depId == 0 || depId == value.getDepartmentId())

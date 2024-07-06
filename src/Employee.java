@@ -4,9 +4,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class Employee {
-    static int currentId = 0;
+    private static int currentId = 0;
 
-    private int employeeId;
+    private int Id;
     private String firstName;
     private String secondName;
     private String middleName;
@@ -28,13 +28,13 @@ public class Employee {
         salary = sal;
         shortName = returnShortName(secondName, firstName, middleName);
         currentId++;
-        employeeId = currentId;
+        Id = currentId;
     }
 
     // Вариант 2. параметры передаются одной форматированной строкой. Используется для чтения сохраненных данных из файла
     public Employee(String line) {
         String[] em = lineToArray(line);
-        employeeId = Integer.parseInt(em[0]);
+        Id = Integer.parseInt(em[0]);
         fullName = em[1];
         shortName = em[2];
         firstName = em[3];
@@ -61,18 +61,18 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return employeeId == employee.employeeId && age == employee.age && departmentId == employee.departmentId &&
+        return Id == employee.Id && age == employee.age && departmentId == employee.departmentId &&
                 salary == employee.salary && firstName.equals(employee.firstName) && secondName.equals(employee.secondName) &&
                 middleName.equals(employee.middleName) && fullName.equals(employee.fullName) && shortName.equals(employee.shortName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(employeeId, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
+        return Objects.hash(Id, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
     }
 
     public String toString() {
-        return employeeId + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
+        return Id + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
                 + age + ";" + departmentId + ";" + salary + "\n";
     }
     // локальные вспомогательные методы
@@ -85,10 +85,14 @@ public class Employee {
     private String @NotNull [] lineToArray(@NotNull String line) {
         return line.split(";");
     }
+
     // Блок методов get
+    public static int getCurrentId() {
+        return currentId;
+    }
 
     public int getId() {
-        return employeeId;
+        return Id;
     }
 
     public String getShortName() {
@@ -124,6 +128,12 @@ public class Employee {
     }
 
     // Блок методов set
+
+
+    public static void setCurrentId(int currentId) {
+        Employee.currentId = currentId;
+    }
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }

@@ -119,8 +119,8 @@ public class Main {
 
     private static void editEmployee(EmployeeBook empBook) {
         int empId = Input.employeeId();
-        Employee selectedEmployee = empBook.getEmployeeById(empId);
-        if (selectedEmployee != null) {
+        try {
+            Employee selectedEmployee = empBook.getEmployeeById(empId);
             String secondName = Input.secondName(selectedEmployee.getSecondName());
             String firstName = Input.firstName(selectedEmployee.getFirstName());
             String surName = Input.middleName(selectedEmployee.getMiddleName());
@@ -130,19 +130,19 @@ public class Main {
 
             selectedEmployee.update(secondName, firstName, surName, age, depId, salary);
             Display.formatMessage("Данные сотрудника с ID=%d обновлены", empId);
-        } else {
-            Display.formatMessage("Сотрудник с ID=%d отсутствует в базе", empId);
+        } catch (Exception e) {
+            Display.message(e.getMessage());
         }
     }
 
     private static void deleteEmployee(EmployeeBook empBook) {
         int empId = Input.employeeId();
-        Employee selectedEmployee = empBook.getEmployeeById(empId);
-        if (selectedEmployee != null) {
+        try {
+            Employee selectedEmployee = empBook.getEmployeeById(empId);
             Display.formatMessage("Сотрудник %s уволен", selectedEmployee.getShortName());
             empBook.deleteEmployee(empId);
-        } else {
-            Display.formatMessage("Сотрудник с ID=%d отсутствует в базе", empId);
+        } catch (Exception e) {
+            Display.message(e.getMessage());
         }
     }
 
@@ -251,12 +251,12 @@ public class Main {
 
     private static void reportEmployeeData(EmployeeBook empBook) {
         int empId = Input.employeeId();
-        Employee selectedEmployee = empBook.getEmployeeById(empId);
-        if (selectedEmployee != null) {
+        try {
+            Employee selectedEmployee = empBook.getEmployeeById(empId);
             Display.message("Сведения о сотруднике ID=" + selectedEmployee.getId());
             Display.reportEmployeeData(selectedEmployee);
-        } else {
-            Display.formatMessage("Сотрудник с ID=%d отсутствует в базе", empId);
+        } catch (Exception e) {
+            Display.message(e.getMessage());
         }
     }
 
