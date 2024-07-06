@@ -6,7 +6,7 @@ import java.util.Objects;
 public class Employee {
     private static int currentId = 0;
 
-    private int Id;
+    private final int id;
     private String firstName;
     private String secondName;
     private String middleName;
@@ -28,13 +28,13 @@ public class Employee {
         salary = sal;
         shortName = returnShortName(secondName, firstName, middleName);
         currentId++;
-        Id = currentId;
+        id = currentId;
     }
 
     // Вариант 2. параметры передаются одной форматированной строкой. Используется для чтения сохраненных данных из файла
     public Employee(String line) {
         String[] em = lineToArray(line);
-        Id = Integer.parseInt(em[0]);
+        id = Integer.parseInt(em[0]);
         fullName = em[1];
         shortName = em[2];
         firstName = em[3];
@@ -61,18 +61,18 @@ public class Employee {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Employee employee = (Employee) o;
-        return Id == employee.Id && age == employee.age && departmentId == employee.departmentId &&
+        return id == employee.id && age == employee.age && departmentId == employee.departmentId &&
                 salary == employee.salary && firstName.equals(employee.firstName) && secondName.equals(employee.secondName) &&
                 middleName.equals(employee.middleName) && fullName.equals(employee.fullName) && shortName.equals(employee.shortName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(Id, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
+        return Objects.hash(id, firstName, secondName, middleName, fullName, shortName, age, departmentId, salary);
     }
 
     public String toString() {
-        return Id + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
+        return id + ";" + fullName + ";" + shortName + ";" + firstName + ";" + secondName + ";" + middleName + ";"
                 + age + ";" + departmentId + ";" + salary + "\n";
     }
     // локальные вспомогательные методы
@@ -92,7 +92,7 @@ public class Employee {
     }
 
     public int getId() {
-        return Id;
+        return id;
     }
 
     public String getShortName() {
